@@ -4,7 +4,6 @@ import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import postgres from 'postgres';
-import { error } from 'console';
 import { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
 
@@ -77,6 +76,7 @@ export async function createInvoice(prevState: State, formData:FormData) {
             VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
         `;
     } catch(error) {
+        console.log(error);
         return {
             message: "Database error: Failed to create invoice."
         };
@@ -111,6 +111,7 @@ export async function updateInvoice(id: string, prevState: State, formData: Form
             WHERE id = ${id}
         `;
     } catch(error) {
+        console.log(error);
         return {
             message: 'Database Error. Failed to Update Invoice.'
         };
