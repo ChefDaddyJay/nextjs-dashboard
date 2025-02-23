@@ -212,6 +212,8 @@ export async function fetchFilteredCustomers(
     LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
 	  `;
 
+    data.forEach((c)=>{console.log(c.image_url)});
+
     const customers = data.map((customer) => ({
       ...customer,
       total_pending: formatCurrency(customer.total_pending),

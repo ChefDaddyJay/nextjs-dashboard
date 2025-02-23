@@ -31,7 +31,7 @@ const CustomerFormSchema = z.object({
     email: z.string({
         invalid_type_error: "Please enter a valid email."
     }).email(),
-    imageURL: z.string().startsWith("/customers/")
+    imageURL: z.string()
 });
 const CreateCustomer = CustomerFormSchema.omit({id: true});
 const UpdateCustomer = CustomerFormSchema.omit({id: true});
@@ -154,8 +154,9 @@ export async function createCustomer(prevState: CustomerState, formData:FormData
     const validatedFields = CreateCustomer.safeParse({
         name: formData.get('name'),
         email: formData.get('email'),
-        imageURL: '/customers/default.png'
+        imageURL: formData.get('imageURL')
     });
+    console.log(formData);
 
     if(!validatedFields.success) {
         return {
@@ -215,9 +216,4 @@ export async function updateCustomer(id: string, prevState: CustomerState, formD
 
     revalidatePath('/dashboard/customers');
     redirect('/dashboard/customers');   
-}
-
-export async function deleteCustomer(id:string) {
-    await sql`DELETE FROM customers WHERE id = ${id}`;
-    revalidatePath('/dashboard/customers');
 }

@@ -1,6 +1,8 @@
-import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+'use client';
+
+import { PencilIcon, PlusIcon, ArrowUpOnSquareIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { deleteCustomer } from '@/app/lib/actions';
+import { useState } from 'react';
 
 export function CreateCustomer() {
   return (
@@ -25,14 +27,46 @@ export function UpdateCustomer({ id }: { id: string }) {
   );
 }
 
-export function DeleteCustomer({ id }: { id: string }) {
-  const deleteCustomerWithId = deleteCustomer.bind(null, id);
+export function UploadImage({onUpload}:{onUpload: (url: string) => void}) {
+  const [file, setFile] = useState<File>();
+
+  const uploadFile = async () => {
+    if(!file) {
+      alert('No file selected');
+      return;
+    }
+
+    try {
+      const data = new FormData();
+      data.set("file", file);
+      const uploadRequest = await fetch('/api/files', {
+        method: "POST",
+        body: data
+      });
+      const ipfsUrl = await uploadRequest.json();
+      onUpload(ipfsUrl);
+    } catch(e) {
+      console.log(e);
+      alert("Trouble uploading the file.");
+    }
+  }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFile(e.target?.files?.[0]);
+  }
+
   return (
-    <form action={deleteCustomerWithId}>
-      <button type="submit" className="rounded-md border p-2 hover:bg-gray-100">
-        <span className="sr-only">Delete</span>
-        <TrashIcon className="w-5" />
-      </button>
-    </form>
-  );
+    <div className="mb-4">
+      <label htmlFor="imageFile" className="mb-2 block text-sm font-medium">
+        Customer Image
+      </label>
+      <div className="relative mt-2 rounded-md">
+        <input type="file" onChange={handleChange} />
+        <button type="button" className="rounded-md border p-2 hover:bg-gray-100" onClick={uploadFile}>
+          <span className="sr-only">Upload</span>
+          <ArrowUpOnSquareIcon className="w-5" />
+        </button>
+      </div>
+    </div>
+  )
 }
