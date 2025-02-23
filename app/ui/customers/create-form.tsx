@@ -4,21 +4,12 @@ import Link from 'next/link';
 import { Button } from '@/app/ui/button';
 import { createCustomer, CustomerState } from '@/app/lib/actions';
 import { useActionState, useState } from 'react';
-import { UploadImage } from './buttons';
+import { UploadImage } from '@/app/ui/customers/buttons';
 
 export default function Form() {
   const initialState: CustomerState = { message: null, errors: {} };
   const [state, formAction] = useActionState(createCustomer, initialState);
-  const [name, setName] = useState<string>();
-  const [email, setEmail] = useState<string>();
   const [imageURL, setURL] = useState('/customers/default.png');
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    switch(e.target.id) {
-      case 'name': setName(e.target.value); break;
-      case 'email': setEmail(e.target.value); break;
-    }
-  };
   
   const updateURL = (url: string) => {
     setURL(url);
@@ -38,8 +29,6 @@ export default function Form() {
               name="name"
               type="text"
               placeholder="Customer Name"
-              defaultValue={name}
-              onChange={handleChange}
               className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               aria-describedby="name-error"
             />
@@ -66,8 +55,6 @@ export default function Form() {
                 name="email"
                 type="email"
                 placeholder="Customer Email"
-                defaultValue={email}
-                onChange={handleChange}
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 aria-describedby="email-error"
               />

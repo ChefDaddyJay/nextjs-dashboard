@@ -4,12 +4,18 @@ import { Customer } from '@/app/lib/definitions';
 import Link from 'next/link';
 import { Button } from '@/app/ui/button';
 import { updateCustomer, CustomerState } from '@/app/lib/actions';
-import { useActionState } from 'react';
+import { useActionState, useState } from 'react';
+import { UploadImage } from '@/app/ui/customers/buttons';
 
 export default function EditCustomerForm({customer}: {customer: Customer}) {
   const initialState: CustomerState = { message: null, errors: {} };
   const updateCustomerWithId = updateCustomer.bind(null, customer.id);
   const [state, formAction] = useActionState(updateCustomerWithId, initialState);
+  const [imageURL, setURL] = useState(customer.image_url);
+
+  const updateURL = (url: string) => {
+    setURL(url);
+  }
   
   return (
     <form action={formAction}>
@@ -65,6 +71,18 @@ export default function EditCustomerForm({customer}: {customer: Customer}) {
                   {'Please enter an email for the customer.'}
                 </p>
             ))}
+          </div>
+        </div>
+
+        {/* Customer image */}
+        <div className="mb-4">
+          <label htmlFor="imageFile" className="mb-2 block text-sm font-medium">
+            Customer Image
+          </label>
+          <div className="relative mt-2 rounded-md">
+            <img src={imageURL} width="60" height="60" />
+            <input id="imageURL" name="imageURL" type="hidden" value={imageURL} />
+            <UploadImage onUpload={updateURL} />
           </div>
         </div>
       </div>
